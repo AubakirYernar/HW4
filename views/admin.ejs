@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Админ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 80%;
+            height: 3   00px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <% if (!auth) { %>
+        <form action="/admin" method="POST">
+            <input type="password" name="password" placeholder="Админ пароль">
+            <button type="submit">Войти</button>
+        </form>
+    <% } else { %>
+        <h1>Панель администратора</h1>
+        <table>
+            <tr>
+                <th>Логин</th>
+                <th>Email</th>
+                <th>Действия</th>
+            </tr>
+            <% users.forEach(user => { %>
+                <tr>
+                    <form action="/admin/update/<%= user._id %>" method="POST">
+                        <td><input name="username" value="<%= user.username %>"></td>
+                        <td><input name="email" value="<%= user.email %>"></td>
+                        <td>
+                            <input type="password" name="password" placeholder="Новый пароль">
+                            <button type="submit">Обновить</button>
+                        </td>
+                    </form>
+                    <td>
+                        <form action="/admin/delete/<%= user._id %>" method="POST">
+                            <button style="background-color: #dc3545;" type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </table>
+        
+        <h2>Создать пользователя</h2>
+        <form action="/admin/create" method="POST">
+            <input type="text" name="username" placeholder="Логин">
+            <input type="email" name="email" placeholder="Email">
+            <input type="password" name="password" placeholder="Пароль">
+            <button type="submit">Создать</button>
+        </form>
+        
+        <a href="/logout">Выйти</a>
+    <% } %>
+</body>
+</html>
